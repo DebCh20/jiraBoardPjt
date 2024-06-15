@@ -6,9 +6,21 @@ function Boards() {
     const [progess, setProgress]=useState([]);
     const [done, setDone]=useState([]);
     const [newitem, setNewitem]=useState('');
+    const [option, setOption]=useState('');
+    const [optionId, setOptionId]=useState('');
 
     const addTodo=()=>{
         setTodo((prev)=>[...prev,newitem])
+    }
+    const addToProgress=(e)=>{
+        console.log(e.target.id);
+        if(e.target.id.includes('todo'))
+        setProgress(todo.filter((item)=>e.target.id===item.id))
+    }
+    const selectedOption=(e)=>{
+        setOption(e.target.value);
+        setOptionId(e.target.id);
+        console.log(optionId);
     }
     console.log(todo);
   return (
@@ -24,11 +36,10 @@ function Boards() {
                 {todo.map((item, i)=>{
                     return(
                     <li style={{color:'white'}} key={i} id={`todo_${i}`}>{item}
-                    <select>
+                    <select value={option} onChange={selectedOption} id={`optionSelected_${i}`}>
                         <option value="">...</option>
-                        <option value="progress">in progress</option>
-                        <option value="done">to done</option>
-
+                        <option value="progress" id={`todo_${i}`}>in progress</option>
+                        <option value="done" id={`todo_${i}`}>to done</option>
                     </select>
                     </li>)
                 })}
