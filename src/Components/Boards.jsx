@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Boards() {
   
@@ -10,19 +10,32 @@ function Boards() {
     const [optionId, setOptionId]=useState('');
 
     const addTodo=()=>{
-        setTodo((prev)=>[...prev,newitem])
+        let uid=self.crypto.randomUUID();
+        console.log(newitem);
+        let newTodo= <li style={{color:'white'}} key={uid} id={`todo_${uid}`}>
+            {newitem}
+        <select value={option} onChange={selectedOption} id={`todo_optionSelected_${uid}`}>            
+            <option value="">...</option>
+            <option value="progress" id={`todo_${uid}`}>in progress</option>
+            <option value="done" id={`todo_${uid}`}>to done</option>
+        </select>
+        </li>;
+        setTodo((prev)=>[...prev,newTodo])
     }
-    const addToProgress=(e)=>{
-        console.log(e.target.id);
-        if(e.target.id.includes('todo'))
-        setProgress(todo.filter((item)=>e.target.id===item.id))
-    }
+    useEffect(()=>{
+        let id= optionId.substring(optionId.lastIndexOf('_')+1);
+        console.log('option', optionId, 'id',id);
+
+        if(optionId.includes('todo'))
+        setProgress(todo.filter((item)=>{
+            id===item.props.id.slice(item.props.id.lastIndexOf('_')+1)}))
+
+       },[option])
+        
     const selectedOption=(e)=>{
         setOption(e.target.value);
         setOptionId(e.target.id);
-        console.log(optionId);
     }
-    console.log(todo);
   return (
     <div>
         <input type='text' onChange={e=>setNewitem(e.target.value)}></input>
@@ -33,16 +46,7 @@ function Boards() {
             style={{display:'flex', flexDirection:'column', width:'30%'}}>
                 <p>Todo list</p>
                 <ul>
-                {todo.map((item, i)=>{
-                    return(
-                    <li style={{color:'white'}} key={i} id={`todo_${i}`}>{item}
-                    <select value={option} onChange={selectedOption} id={`optionSelected_${i}`}>
-                        <option value="">...</option>
-                        <option value="progress" id={`todo_${i}`}>in progress</option>
-                        <option value="done" id={`todo_${i}`}>to done</option>
-                    </select>
-                    </li>)
-                })}
+                  {todo}
                 </ul>
             </div>
             <div
